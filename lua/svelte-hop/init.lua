@@ -21,7 +21,6 @@ local function create_svop_activate_autocommand()
 	vim.api.nvim_create_autocmd("BufAdd", {
 		pattern = config.pattern,
 		callback = function()
-			print("BufAdd autocmd ran")
 			M.enable_and_activate_svop()
 		end,
 		once = true,
@@ -30,17 +29,14 @@ local function create_svop_activate_autocommand()
 end
 
 function M.enable_and_activate_svop()
-	print("enable_and_activate_svop ran")
 	config.update({ enabled = true, active = true })
 	utils.map_svop_keys(config)
 end
 
 function M.enable_svop()
 	if utils.is_sveltelike_dir() then
-		print("enable_svop ran and is sveltelike dir")
 		M.enable_and_activate_svop()
 	else
-		print("enable_svop ran and is not sveltelike dir")
 		config.update({ enabled = true })
 		create_svop_activate_autocommand()
 	end
@@ -54,11 +50,9 @@ function M.setup(user_config)
 	config.update(user_config)
 
 	if config.enabled and utils.is_sveltelike_dir() then
-		print("setup ran, svop is enabled and is_sveltelike_dir")
 		M.enable_and_activate_svop()
 	else
 		if config.enabled then
-			print("setup ran, and svop is enabled")
 			create_svop_activate_autocommand()
 		end
 	end
