@@ -18,8 +18,8 @@ local command_args_filename_mappings = {
 }
 
 local function create_svop_activate_autocommand()
-	vim.api.nvim_create_autocmd("BufAdd", {
-		pattern = config.pattern,
+	autocmd("BufAdd", {
+		pattern = config.activation_pattern,
 		callback = function()
 			M.enable_and_activate_svop()
 		end,

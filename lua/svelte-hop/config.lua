@@ -3,7 +3,7 @@
 local default_config = {
 	enabled = true,
 	active = false,
-	pattern = "*/src/routes/*",
+	activation_pattern = "*/src/routes/*",
 	keymaps = {
 		["+page.svelte"] = "<leader>2",
 		["+page.ts"] = "<leader>3",

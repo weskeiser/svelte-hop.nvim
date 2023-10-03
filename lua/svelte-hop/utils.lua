@@ -17,7 +17,7 @@ function M.file_exists(fname)
 end
 
 function M.is_sveltelike_dir()
-	return vim.fn.expand("%"):find(require("svelte-hop.config").pattern) ~= nil
+	return vim.fn.expand("%"):find(require("svelte-hop.config").activation_pattern) ~= nil
 end
 
 function M.open_sibling_by_filename(fname)
