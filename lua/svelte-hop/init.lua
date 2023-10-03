@@ -14,7 +14,7 @@ M.commands_short = {
 	["e"] = "+error.ts",
 }
 
-function M.navigate_to_sibling(fname)
+function M.navigate_sibling_by_name(fname)
 	local fpath = vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h") .. "/" .. fname
 	if utils.file_exists(fpath) then
 		vim.cmd("e " .. fpath)
@@ -45,13 +45,13 @@ function M.setup(config)
 
 	for filename, keymap in pairs(merged_config.keymaps) do
 		map("n", keymap, function()
-			M.navigate_to_sibling(filename)
+			M.navigate_sibling_by_name(filename)
 		end)
 	end
 
 	vim.api.nvim_create_user_command("Svop", function(opts)
 		local fname = M.commands_short[opts.fargs[1]]
-		M.navigate_to_sibling(fname)
+		M.navigate_sibling_by_name(fname)
 	end, {
 		nargs = 1,
 		desc = "Svelte-Hop",
