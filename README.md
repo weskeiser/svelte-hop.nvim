@@ -5,7 +5,6 @@ Jump between route files in Svelte. You can change the keybindings to your likin
 ```lua
 use({
   "weskeiser/svelte-hop.nvim",
-  as = "svelte-hop.nvim",
   config = function()
     require("svelte-hop").setup({
       enabled = true, -- If set to enabled, Svelte-Hop will activate when in a matching directory. If disabled, you will have to manually enable Svelte-Hop. See activation_pattern.
