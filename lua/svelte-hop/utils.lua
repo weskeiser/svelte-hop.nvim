@@ -1,4 +1,4 @@
-local Path = require("plenary.path")
+local map = vim.keymap.set
 
 local M = {}
 
@@ -16,39 +16,24 @@ function M.file_exists(fname)
 	end
 end
 
-local function merge_table_impl(t1, t2)
-	for k, v in pairs(t2) do
-		if type(v) == "table" then
-			if type(t1[k]) == "table" then
-				merge_table_impl(t1[k], v)
-			else
-				t1[k] = v
-			end
-		else
-			t1[k] = v
-		end
+function M.is_sveltelike_dir()
+	return vim.fn.expand("%"):find(require("svelte-hop.config").pattern) ~= nil
+end
+
+function M.open_sibling_by_filename(fname)
+	local fpath = vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h") .. "/" .. fname
+	if M.file_exists(fpath) then
+		vim.cmd("e " .. fpath)
 	end
 end
 
-function M.merge_tables(...)
-	local out = {}
-	for i = 1, select("#", ...) do
-		merge_table_impl(out, select(i, ...))
+-- arg: {config} or "unmap"
+function M.map_svop_keys(arg)
+	for filename, keymap in pairs(arg.keymaps) do
+		map("n", keymap, function()
+			M.open_sibling_by_filename(filename)
+		end)
 	end
-	return out
-end
-
-function M.expand_dir(config)
-	local dirs = config.dirs or {}
-	for k in pairs(dirs) do
-		local expanded_path = Path.new(k):expand()
-		dirs[expanded_path] = dirs[k]
-		if expanded_path ~= k then
-			dirs[k] = nil
-		end
-	end
-
-	return config
 end
 
 return M
