@@ -5,6 +5,7 @@ local default_config = {
 	active = false,
 	activation_pattern = "*/src/routes/*",
 	create_if_missing = false,
+	status_icons = false,
 	keymaps = {
 		["+page.svelte"] = "<leader>2",
 		["+page.ts"] = "<leader>3",
