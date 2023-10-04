@@ -24,6 +24,8 @@ function M.open_sibling_by_filename(fname)
 	local fpath = vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h") .. "/" .. fname
 	if M.file_exists(fpath) then
 		vim.cmd("e " .. fpath)
+	else
+		vim.notify(fname .. " does not exist for current route")
 	end
 end
 
