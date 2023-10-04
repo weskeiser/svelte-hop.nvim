@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local config = require("svelte-hop.config")
 
 local M = {}
 
@@ -17,19 +18,19 @@ function M.file_exists(fname)
 end
 
 function M.is_sveltelike_dir()
-	return vim.fn.expand("%"):find(require("svelte-hop.config").activation_pattern) ~= nil
+	return vim.fn.expand("%"):find(config.activation_pattern) ~= nil
 end
 
 function M.open_sibling_by_filename(fname)
 	local fpath = vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h") .. "/" .. fname
-	if M.file_exists(fpath) then
+	if M.file_exists(fpath) or config.create_if_missing then
 		vim.cmd("e " .. fpath)
 	else
 		vim.notify(fname .. " does not exist for current route")
 	end
 end
 
--- arg: {config} or "unmap"
+-- (arg): {config} or "unmap"
 function M.map_svop_keys(arg)
 	for filename, keymap in pairs(arg.keymaps) do
 		map("n", keymap, function()

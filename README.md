@@ -9,6 +9,7 @@ use({
     require("svelte-hop").setup({
       enabled = true, -- If set to enabled, Svelte-Hop will activate when in a matching directory. If disabled, you will have to manually enable Svelte-Hop. See activation_pattern.
       activation_pattern = "*/src/routes/*", -- Svelte-Hop will activate when this pattern is found in the path if enabled is set to true. Checks are triggered by BufAdd.
+      create_if_missing = false, -- Enable to create the route file if it does not exist when attempting to navigate.
       keymaps = {
         ["+page.svelte"] = "<leader>2",
         ["+page.ts"] = "<leader>3",
