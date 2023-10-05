@@ -22,11 +22,16 @@ function M.is_sveltelike_dir()
 end
 
 function M.open_sibling_by_filename(fname)
-	local fpath = vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h") .. "/" .. fname
-	if M.file_exists(fpath) or config.create_if_missing then
-		vim.cmd("e " .. fpath)
+	local curr_path = vim.fn.expand("%")
+	local fpath = vim.fn.fnamemodify(curr_path, ":p:h") .. "/" .. fname
+	if fpath == curr_path then
+		return
 	else
-		vim.notify(fname .. " does not exist for current route")
+		if M.file_exists(fpath) or config.create_if_missing then
+			vim.cmd("e " .. fpath)
+		else
+			vim.notify(fname .. " does not exist for current route")
+		end
 	end
 end
 
