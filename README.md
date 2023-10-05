@@ -33,9 +33,9 @@ use({
         ["+page.ts"] = "<leader>3",
         ["+page.server.ts"] = "<leader>4",
 
-        ["+layout.server.ts"] = "<leader>7",
+        ["+layout.svelte"] = "<leader>7",
         ["+layout.ts"] = "<leader>8",
-        ["+layout.svelte"] = "<leader>9",
+        ["+layout.server.ts"] = "<leader>9",
 
         ["+server.ts"] = "<leader>6",
         ["+error.ts"] = "<leader>5",
