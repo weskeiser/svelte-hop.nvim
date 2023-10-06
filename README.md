@@ -1,29 +1,28 @@
 # Svelte-Hop
+NOTE: Svelte-Hop is highly experimental and currently in alpha. Expect breaking changes.
+
 Jump between route files in Svelte.
+Statusline icons show which route files exist in your folder and can be enabled in the configuration.
+You can change the keybindings to your liking.
 
-You can change the keybindings to your liking. See configuration below.
-
-Statusline icons can be enabled in the configuration. This provides the `%{%v:lua.SvopStatusline()%}` that you can include in your statusline or winbar.
-
-## Configuration
-### With Packer
+## Install and configuration
+#### With [packer.nvim]( https://github.com/wbthomason/packer.nvim )
 ```lua
 use({
   "weskeiser/svelte-hop.nvim",
   config = function()
     require("svelte-hop").setup({
-      -- When enabled Svelte-Hop will activate when in a matching directory (see
-      -- activation_pattern). Disable if you want to manually enable Svelte-Hop.
+      -- Enable Svelte-Hop
       enabled = true,
 
-      -- Svelte-Hop will activate when this pattern is found in the path. Checks are
-      -- triggered by BufAdd.
+      -- Directory pattern that activates Svelte-Hop (if enabled above).
+      -- Checks are triggered by BufAdd.
       activation_pattern = "*/src/routes/*",
 
-      -- Enable to create the route file if it does not exist when attempting to navigate.
+      -- Create route files if they don't exist
       create_if_missing = false,
 
-      -- Enable to use the provided function `%{%v:lua.SvopStatusline()%}` that you can
+      -- Provides the function `%{%v:lua.SvopStatusline()%}` that you can
       -- include in your statusline or winbar.
       status_icons = false,
 
@@ -61,13 +60,18 @@ use({
 * `Svop s` "+server.ts"
 * `Svop e` "+error.ts"
 
-## Statusline icon highlights
-#### Target related groups
+## Statusline icons
+Enable `statusline_icons` in your configuration.
+
+Then include `%{%v:lua.SvopStatusline()%}` in your statusline or winbar.
+
+#### Highlights
+##### Target related groups
 * `SvopGroup1` +page files
 * `SvopGroup2` +layout files
 * `SvopGroup3` +server.ts and error.ts
 
-#### Targets the same groups as above, when the file does not exist.
+##### Targets the same groups as above, when the file does not exist.
 * `SvopGroup1Missing` +page files
 * `SvopGroup2Missing` +layout files
 * `SvopGroup3Missing` +server.ts and error.ts
