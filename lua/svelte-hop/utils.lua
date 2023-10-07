@@ -24,13 +24,28 @@ end
 function M.open_sibling_by_filename(fname)
 	local curr_path = vim.fn.expand("%")
 	local fpath = vim.fn.fnamemodify(curr_path, ":p:h") .. "/" .. fname
+
 	if fpath == curr_path then
 		return
 	else
-		if M.file_exists(fpath) or config.create_if_missing then
+		if M.file_exists(fpath) then
 			vim.cmd("e " .. fpath)
 		else
-			vim.notify(fname .. " does not exist for current route")
+			if config.create_if_missing then
+				local opts = {
+					prompt = "Edit new route file " .. fname .. "? [y / n]: ",
+				}
+
+				local function thecb(input)
+					if input == "y" or input == "yy" or input == "Y" or input == "yes" then
+						vim.cmd("e " .. fpath)
+					end
+				end
+
+				vim.ui.input(opts, thecb)
+			else
+				vim.notify(fname .. " does not exist for current route")
+			end
 		end
 	end
 end
