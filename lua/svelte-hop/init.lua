@@ -58,6 +58,7 @@ function M.enable_and_activate_svop()
 	utils.map_svop_keys(config)
 
 	if config.status_icons then
+		require("svelte-hop.highlights").setup()
 		require("svelte-hop.status-icons").enable_status_icons()
 	end
 end
