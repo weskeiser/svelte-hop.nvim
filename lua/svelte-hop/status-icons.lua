@@ -1,17 +1,30 @@
 local config = require("svelte-hop.config")
-local setHl = function(k, v)
+
+local user_hl_statusline = vim.api.nvim_get_hl(0, { name = "StatusLine" })
+local user_hl_statusline_bg = "#" .. vim.fn.printf("%x", user_hl_statusline.bg)
+
+local setStatusHl = function(k, v)
+	v.bg = v.bg or user_hl_statusline_bg
+
+	if v.underline == nil then
+		v.underline = true
+	end
+
 	vim.api.nvim_set_hl(0, k, v)
 end
 
-setHl("Svop1", { fg = "#b98282" })
-setHl("Svop2", { fg = "#6696cc" })
-setHl("Svop3", { fg = "#96cc66" })
-setHl("Svop4", { fg = "#8381a2" })
-setHl("CurrentSvop1", { fg = "#b98282", sp = "#cf9ad7", underline = true })
-setHl("CurrentSvop2", { fg = "#86b6ec", sp = "#a6d6ff", underline = true })
-setHl("CurrentSvop3", { fg = "#96cc66", sp = "#b6ec86", underline = true })
-setHl("CurrentSvop4", { fg = "#8381a2", sp = "#a3a1c2", underline = true })
-setHl("MissingSvop", { fg = "#555555" })
+setStatusHl("Svop1", { fg = "#b98282", sp = "#555555" })
+setStatusHl("Svop2", { fg = "#66ac46", sp = "#555555" })
+setStatusHl("Svop3", { fg = "#6696cc", sp = "#555555" })
+setStatusHl("Svop4", { fg = "#8381a2", sp = "#555555" })
+setStatusHl("Svop1Current", { fg = "#b98282", sp = "#bbbbbb" })
+setStatusHl("Svop2Current", { fg = "#96cc66", sp = "#bbbbbb" })
+setStatusHl("Svop3Current", { fg = "#86b6ec", sp = "#bbbbbb" })
+setStatusHl("Svop4Current", { fg = "#8381a2", sp = "#bbbbbb" })
+
+setStatusHl("SvopMissing", { fg = "#555555", sp = "#555555" })
+setStatusHl("SvopDivider", { fg = "#555555", underline = false })
+setStatusHl("SvopUnderline", { fg = "#555555" })
 
 --
 local M = {}
