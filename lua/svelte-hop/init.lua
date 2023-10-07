@@ -55,7 +55,7 @@ end
 function M.enable_and_activate_svop()
 	config.update({ enabled = true, active = true })
 
-	utils.map_svop_keys(config)
+	utils.config_set_keymap(config)
 
 	if config.status_icons then
 		require("svelte-hop.highlights").setup()
@@ -90,8 +90,8 @@ function M.setup(user_config)
 	end
 
 	usercmd("Svop", function(opts)
-		local command_arg = opts.fargs[1]
-		utils.open_sibling_by_filename(command_args_filename_mappings[command_arg])
+		local cmd_arg = opts.fargs[1]
+		utils.filename_handle_hop(cmd_args_filename_mappings[cmd_arg])
 	end, {
 		nargs = 1,
 		desc = "Svelte-Hop Navigator",

@@ -22,6 +22,7 @@ function M.is_sveltelike_dir()
 end
 
 function M.open_sibling_by_filename(fname)
+function M.filename_handle_hop(fname)
 	local curr_path = vim.fn.expand("%")
 	local fpath = vim.fn.fnamemodify(curr_path, ":p:h") .. "/" .. fname
 
@@ -51,10 +52,10 @@ function M.open_sibling_by_filename(fname)
 end
 
 -- (arg): {config} or "unmap"
-function M.map_svop_keys(arg)
+function M.config_set_keymap(arg)
 	for filename, keymap in pairs(arg.keymaps) do
 		map("n", keymap, function()
-			M.open_sibling_by_filename(filename)
+			M.filename_handle_hop(filename)
 		end)
 	end
 end
