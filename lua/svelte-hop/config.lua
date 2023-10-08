@@ -6,6 +6,22 @@ local default_config = {
 	activation_pattern = "*/src/routes/*",
 	create_if_missing = false,
 	status_icons = false,
+	templates = {
+		enabled = true,
+		template_dir = nil,
+		templates = {
+			["+page.svelte"] = { 2, 3 },
+			["+page.ts"] = { 1, 20 },
+			["+page.server.ts"] = { 1, 27 },
+
+			["+layout.svelte"] = { 2, 3 },
+			["+layout.ts"] = { 1, 20 },
+			["+layout.server.ts"] = { 1, 27 },
+
+			["+server.ts"] = { 1, 17 },
+			["+error.ts"] = { 1, 20 },
+		},
+	},
 	keymaps = {
 		["+page.svelte"] = "<leader>2",
 		["+page.ts"] = "<leader>3",

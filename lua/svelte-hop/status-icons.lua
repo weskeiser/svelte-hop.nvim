@@ -28,6 +28,7 @@ function M.set_buf_svopstatus(buf)
 				else
 					if index == 7 or index == 8 then
 						group_no = 4
+
 						if index == 7 then
 							divider = "%#SvopNC# "
 						end

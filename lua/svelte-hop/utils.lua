@@ -1,6 +1,3 @@
-local map = vim.keymap.set
-local config = require("svelte-hop.config")
-
 local M = {}
 
 function M.file_exists(fname)
@@ -17,47 +14,22 @@ function M.file_exists(fname)
 	end
 end
 
+function M.file_get_contents(file)
+	local opened_file = assert(io.open(file, "r"))
+	local contents = opened_file:read("a")
+	opened_file:close()
+	return contents
+end
+
+function M.file_append_content(file, content)
+	local opened_file = assert(io.open(file, "a"))
+	opened_file:write(content)
+	opened_file:flush()
+	opened_file:close()
+end
+
 function M.is_sveltelike_dir()
-	return vim.fn.expand("%"):find(config.activation_pattern) ~= nil
-end
-
-function M.open_sibling_by_filename(fname)
-function M.filename_handle_hop(fname)
-	local curr_path = vim.fn.expand("%")
-	local fpath = vim.fn.fnamemodify(curr_path, ":p:h") .. "/" .. fname
-
-	if fpath == curr_path then
-		return
-	else
-		if M.file_exists(fpath) then
-			vim.cmd("e " .. fpath)
-		else
-			if config.create_if_missing then
-				local opts = {
-					prompt = "Edit new route file " .. fname .. "? [y / n]: ",
-				}
-
-				local function thecb(input)
-					if input == "y" or input == "yy" or input == "Y" or input == "yes" then
-						vim.cmd("e " .. fpath)
-					end
-				end
-
-				vim.ui.input(opts, thecb)
-			else
-				vim.notify(fname .. " does not exist for current route")
-			end
-		end
-	end
-end
-
--- (arg): {config} or "unmap"
-function M.config_set_keymap(arg)
-	for filename, keymap in pairs(arg.keymaps) do
-		map("n", keymap, function()
-			M.filename_handle_hop(filename)
-		end)
-	end
+	return vim.fn.expand("%"):find(require("svelte-hop.config").activation_pattern) ~= nil
 end
 
 return M
