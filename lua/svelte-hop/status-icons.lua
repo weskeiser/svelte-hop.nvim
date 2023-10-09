@@ -1,69 +1,69 @@
 local config = require("svelte-hop.config")
+local utils = require("svelte-hop.utils")
 
 local M = {}
 
-M.status_autocmd_id = nil
+local route_files = {
+    "+page.svelte",
+    "+page.ts",
+    "+page.server.ts",
+
+    "+layout.svelte",
+    "+layout.ts",
+    "+layout.server.ts",
+
+    "+server.ts",
+    "+error.ts",
+}
+
+local route_files_hl_begin_and_end = {
+    ["+page.svelte"] = { "%#Svop1", "%#SvopNC# " },
+    ["+page.ts"] = { "%#Svop2", "%#SvopNC# " },
+    ["+page.server.ts"] = { "%#Svop3", "%#SvopDivider#  " },
+
+    ["+layout.svelte"] = { "%#Svop1", "%#SvopNC# " },
+    ["+layout.ts"] = { "%#Svop2", "%#SvopNC# " },
+    ["+layout.server.ts"] = { "%#Svop3", "%#SvopDivider#  " },
+
+    ["+server.ts"] = { "%#Svop4", "%#SvopNC# " },
+    ["+error.ts"] = { "%#Svop4", "" },
+}
+
+M.activation_pattern_bufenter_bufdelete_event = nil
 
 function M.set_buf_svopstatus(buf)
     local current_path = vim.fn.expand("%")
-    local file_root = vim.fn.fnamemodify(current_path, ":p:h") .. "/"
+    local curr_dir = vim.fn.fnamemodify(current_path, ":p:h")
+    local icon = config.status_icons.icon or "◉"
 
-    local statusline = "%#SvopDivider#·⦗ "
+    local statusline = {
+        "%#SvopDivider#·⦗ ",
+    }
 
-    for index, fname in ipairs(require("svelte-hop").route_files) do
-        local group_no = 4
-        local divider = ""
+    for _, filename in ipairs(route_files) do
+        local hl_begin_and_end = route_files_hl_begin_and_end[filename]
+        local hl_mod = ""
 
-        if index == 1 or index == 4 then
-            group_no = 1
-            divider = "%#SvopNC# "
+        if vim.fn.fnamemodify(current_path, ":t") == filename then
+            hl_mod = "Current"
         else
-            if index == 3 or index == 6 then
-                group_no = 2
-                divider = "%#SvopDivider#  "
-            else
-                if index == 2 or index == 5 then
-                    group_no = 3
-                    divider = "%#SvopNC# "
-                else
-                    if index == 7 or index == 8 then
-                        group_no = 4
-
-                        if index == 7 then
-                            divider = "%#SvopNC# "
-                        end
-                    end
-                end
+            if not utils.file_exists(string.format("%s/%s", curr_dir, filename)) then
+                hl_mod = "NC"
             end
         end
 
-        if vim.fn.fnamemodify(current_path, ":t") == fname then
-            -- if is current file
-            local hl = "%#Svop" .. group_no .. "Current#"
-
-            statusline = statusline .. hl .. "◉" .. divider
-        else
-            -- if file exists
-            if require("svelte-hop.utils").file_exists(file_root .. fname) then
-                local hl = "%#Svop" .. group_no .. "#"
-
-                statusline = statusline .. hl .. "◉" .. divider
-            else
-                -- if file does not exists
-                local hl = "%#SvopNC#"
-
-                statusline = statusline .. hl .. "◉" .. divider
-            end
-        end
+        table.insert(statusline, string.format("%s%s#%s%s", hl_begin_and_end[1], hl_mod, icon, hl_begin_and_end[2]))
     end
 
-    vim.b[buf].svopstatus = statusline .. "%#SvopDivider# ⦘·%#StatusLine#"
+    table.insert(statusline, "%#SvopDivider# ⦘·%#StatusLine#")
+
+    vim.b[buf].svopstatus = table.concat(statusline)
 end
 
 function M.enable_status_icons()
     config.update({ status_icons = { enabled = true } })
 
-    M.status_autocmd_id = vim.api.nvim_create_autocmd({ "BufEnter", "BufDelete" }, {
+    M.activation_pattern_bufenter_bufdelete_event = vim.api.nvim_create_autocmd({ "BufEnter", "BufDelete" }, {
         pattern = config.activation_pattern,
         callback = function(event)
             M.set_buf_svopstatus(event.buf)
@@ -77,9 +77,9 @@ end
 function M.disable_status_icons()
     config.update({ status_icons = { enabled = false } })
 
-    if M.status_autocmd_id ~= nil then
-        vim.api.nvim_del_autocmd(M.status_autocmd_id)
-        M.status_autocmd_id = nil
+    if M.activation_pattern_bufenter_bufdelete_event ~= nil then
+        vim.api.nvim_del_autocmd(M.activation_pattern_bufenter_bufdelete_event)
+        M.activation_pattern_bufenter_bufdelete_event = nil
     end
 end
 

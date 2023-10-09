@@ -5,7 +5,7 @@ local default_config = {
     active = false,
     activation_pattern = "*/src/routes/*",
     create_if_missing = false,
-    status_icons = { enabled = false },
+    status_icons = { enabled = false, icon = "◉" },
     templates = {
         enabled = true,
         template_dir = nil,

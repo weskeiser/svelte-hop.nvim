@@ -4,18 +4,6 @@ local actions = require("svelte-hop.actions")
 
 local M = {}
 
-M.route_files = {
-    "+page.svelte",
-    "+page.ts",
-    "+page.server.ts",
-
-    "+layout.svelte",
-    "+layout.ts",
-    "+layout.server.ts",
-
-    "+server.ts",
-    "+error.ts",
-}
 
 local cmd_args_filename_mappings = {
     ["ps"] = "+page.svelte",
@@ -31,11 +19,7 @@ local cmd_args_filename_mappings = {
 }
 
 function SvopStatusline()
-    if not config.status_icons.enabled then
-        return ""
-    end
-
-    if not vim.b["svopstatus"] then
+    if not config.status_icons.enabled or not vim.b["svopstatus"] then
         return ""
     else
         return vim.b["svopstatus"]
