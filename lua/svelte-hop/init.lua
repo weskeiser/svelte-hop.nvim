@@ -51,17 +51,13 @@ function M.setup(user_config)
 
 	config.update(user_config)
 
-	if config.enabled and utils.is_sveltelike_dir() then
-		actions.enable_and_activate_svop()
-	else
-		if config.enabled then
-			actions.create_svop_activate_autocommand()
-		end
+	if config.enabled then
+		actions.enable_svop()
 	end
 
 	vim.api.nvim_create_user_command("Svop", function(opts)
 		local cmd_arg = opts.fargs[1]
-		utils.filename_handle_hop(cmd_args_filename_mappings[cmd_arg])
+		utils.filename_hop(cmd_args_filename_mappings[cmd_arg])
 	end, {
 		nargs = 1,
 		desc = "Svelte-Hop Navigator",
@@ -72,7 +68,7 @@ function M.setup(user_config)
 	end, {})
 
 	vim.api.nvim_create_user_command("SvopActivate", function()
-		actions.enable_and_activate_svop()
+		actions.activate_svop()
 	end, {})
 end
 

@@ -6,14 +6,18 @@ local M = {}
 function M.create_svop_activate_autocommand()
 	vim.api.nvim_create_autocmd("BufAdd", {
 		pattern = config.activation_pattern,
-		callback = M.enable_and_activate_svop,
+		callback = M.activate_svop,
 		once = true,
 		group = vim.api.nvim_create_augroup("Svop", { clear = true }),
 	})
 end
 
-function M.enable_and_activate_svop()
-	config.update({ enabled = true, active = true })
+function M.activate_svop()
+	if not config.enabled then
+		return vim.notify("Svelte-Hop must be enabled before it can be activated")
+	end
+
+	config.update({ active = true })
 
 	M.config_set_keymap(config)
 
@@ -24,55 +28,55 @@ function M.enable_and_activate_svop()
 end
 
 function M.enable_svop()
-	if utils.is_sveltelike_dir() then
-		M.enable_and_activate_svop()
-	else
-		config.update({ enabled = true })
+	config.update({ enabled = true })
+
+	if not utils.is_sveltelike_dir() then
 		M.create_svop_activate_autocommand()
+	else
+		M.activate_svop()
 	end
 end
 
-function M.filename_handle_hop(fname)
-	local curr_path = vim.fn.expand("%")
-	local destination = vim.fn.fnamemodify(curr_path, ":p:h") .. "/" .. fname
+function M.filename_hop(filename)
+	local curr_file = vim.fn.expand("%")
+	local hop_file = string.format("%s/%s", vim.fn.fnamemodify(curr_file, ":p:h"), filename)
 
-	if destination == curr_path then
+	if hop_file == curr_file then
 		return
 	end
 
-	if utils.file_exists(destination) then
-		vim.cmd("e " .. destination)
-		return
+	if utils.file_exists(hop_file) then
+		return vim.cmd.edit(hop_file)
 	end
 
 	if config.create_if_missing then
-		local opts = {
-			prompt = string.format("Edit new route file %s? [y / n]: ", fname),
-		}
-
-		local function on_input(input)
+		local function on_confirm(input)
 			if input == "y" or input == "yy" or input == "Y" or input == "yes" then
 				if config.templates.enabled == true then
-					require("svelte-hop.templates").destination_template_create_rfile(destination, fname)
+					require("svelte-hop.templates").template_file_edit(filename, hop_file)
 				else
-					vim.cmd(string.format("e %s", destination))
+					vim.cmd(string.format("e %s", hop_file))
 				end
 			else
 				vim.notify("Route file creation cancelled")
 			end
 		end
 
-		vim.ui.input(opts, on_input)
-		return
+		local opts = {
+			prompt = string.format("Edit new route file %s? [y / n]: ", filename),
+		}
+
+		vim.ui.input(opts, on_confirm)
+		return vim.notify(string.format("%s created", filename))
 	end
 
-	vim.notify(string.format("%s does not exist for current route", fname))
+	vim.notify(string.format("%s does not exist for current route", filename))
 end
 
 function M.config_set_keymap(cfg)
 	for filename, keymap in pairs(cfg.keymaps) do
 		vim.keymap.set("n", keymap, function()
-			M.filename_handle_hop(filename)
+			M.filename_hop(filename)
 		end)
 	end
 end

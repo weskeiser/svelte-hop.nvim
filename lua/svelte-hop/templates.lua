@@ -1,10 +1,11 @@
 local config = require("svelte-hop.config")
 local debug_utils = require("plenary.debug_utils")
+local utils = require("svelte-hop.utils")
 
 local M = {}
 
-function M.template_get_initial_pos(name)
-	local config_template_value = config.templates.templates[name]
+function M.template_get_initial_pos(template)
+	local config_template_value = config.templates.templates[template]
 	if type(config_template_value) == "table" then
 		return config_template_value
 	else
@@ -12,21 +13,25 @@ function M.template_get_initial_pos(name)
 	end
 end
 
-function M.destination_template_create_rfile(destination, template)
-	local template_dir
+function M.get_template_dir()
+	local template_dir = config.templates.template_dir
 
-	if config.templates.template_dir ~= nil then
-		template_dir = config.templates.template_dir
-	else
+	if template_dir == nil then
 		local svop_dir = vim.fn.fnamemodify(debug_utils.sourced_filepath(), ":h:h:h")
 		template_dir = string.format("%s/templates", svop_dir)
 	end
 
-	local template_file = string.format("%s/%s", template_dir, template)
-	local template_contents = require("svelte-hop.utils").file_get_contents(template_file)
-	require("svelte-hop.utils").file_append_content(destination, template_contents)
+	return template_dir
+end
 
-	vim.cmd(string.format("e %s", destination))
+-- function M.destination_template_create_routefile(destination, template)
+function M.template_file_edit(template, file)
+	local template_file = string.format("%s/%s", M.get_template_dir(), template)
+	local template_contents = utils.file_get_contents(template_file)
+
+	utils.file_append_content(file, template_contents)
+
+	vim.cmd.edit(file)
 
 	vim.api.nvim_win_set_cursor(0, M.template_get_initial_pos(template))
 end
