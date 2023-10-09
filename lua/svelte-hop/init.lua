@@ -31,14 +31,14 @@ local cmd_args_filename_mappings = {
 }
 
 function SvopStatusline()
-    if not config.status_icons then
+    if not config.status_icons.enabled then
         return ""
     end
 
-    if not vim.b.svopstatus then
+    if not vim.b["svopstatus"] then
         return ""
     else
-        return vim.b.svopstatus
+        return vim.b["svopstatus"]
     end
 end
 

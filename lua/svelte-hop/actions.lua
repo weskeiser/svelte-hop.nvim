@@ -21,7 +21,7 @@ function M.activate_svop()
 
     M.config_set_keymap(config)
 
-    if config.status_icons then
+    if config.status_icons.enabled then
         require("svelte-hop.highlights").setup()
         require("svelte-hop.status-icons").enable_status_icons()
     end

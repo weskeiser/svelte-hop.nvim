@@ -61,7 +61,7 @@ function M.set_buf_svopstatus(buf)
 end
 
 function M.enable_status_icons()
-    config.update({ status_icons = true })
+    config.update({ status_icons = { enabled = true } })
 
     M.status_autocmd_id = vim.api.nvim_create_autocmd({ "BufEnter", "BufDelete" }, {
         pattern = config.activation_pattern,
@@ -75,7 +75,7 @@ function M.enable_status_icons()
 end
 
 function M.disable_status_icons()
-    config.update({ status_icons = false })
+    config.update({ status_icons = { enabled = false } })
 
     if M.status_autocmd_id ~= nil then
         vim.api.nvim_del_autocmd(M.status_autocmd_id)
