@@ -54,8 +54,10 @@ function M.filename_hop(filename)
             if input == "y" or input == "yy" or input == "Y" or input == "yes" then
                 if config.templates.enabled == true then
                     require("svelte-hop.templates").template_file_edit(filename, hop_file)
+                    vim.notify(string.format("%s created", filename))
                 else
                     vim.cmd(string.format("e %s", hop_file))
+                    vim.notify("")
                 end
             else
                 vim.notify("Route file creation cancelled")
@@ -67,7 +69,6 @@ function M.filename_hop(filename)
         }
 
         vim.ui.input(opts, on_confirm)
-        return vim.notify(string.format("%s created", filename))
     end
 
     vim.notify(string.format("%s does not exist for current route", filename))
