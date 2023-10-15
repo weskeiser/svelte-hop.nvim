@@ -28,8 +28,12 @@ function M.file_append_content(file, content)
     opened_file:close()
 end
 
-function M.is_sveltelike_dir()
-    return vim.fn.expand("%"):find(require("svelte-hop.config").activation_pattern) ~= nil
+function M.in_svelte_dir(path)
+    return vim.fs.find("svelte.config.*", { path = path, upward = true, type = "directory" })
+end
+
+function M.in_routes_dir(path)
+    return path:find(require("svelte-hop.config").routefiles.dir) ~= nil
 end
 
 return M

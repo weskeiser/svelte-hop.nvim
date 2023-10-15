@@ -1,59 +1,45 @@
-local utils = require("svelte-hop.utils")
 local config = require("svelte-hop.config")
-local actions = require("svelte-hop.actions")
+local svop = require("svelte-hop.svop")
 
 local M = {}
 
-
-local cmd_args_filename_mappings = {
-    ["ps"] = "+page.svelte",
-    ["p"] = "+page.ts",
-    ["psv"] = "+page.server.ts",
-
-    ["ls"] = "+layout.svelte",
-    ["l"] = "+layout.ts",
-    ["lsv"] = "+layout.server.ts",
-
-    ["s"] = "+server.ts",
-    ["e"] = "+error.ts",
-}
-
-function SvopStatusline()
-    if not config.status_icons.enabled or not vim.b["svopstatus"] then
-        return ""
-    else
-        return vim.b["svopstatus"]
-    end
+function M.hop(filename)
+    svop.hop(filename)
 end
 
--- Setup
+function M.enable()
+    config.update({ enabled = true })
+    svop.enable()
+end
+
+function M.disable()
+    config.update({ enabled = false })
+    svop.disable()
+end
 
 function M.setup(user_config)
-    if not user_config then
-        user_config = {}
+    if user_config then
+        config.update(user_config)
     end
 
-    config.update(user_config)
-
-    if config.enabled then
-        actions.enable_svop()
+    function _G.SvopStatus()
+        return vim.b["svopstatus"] or ""
     end
 
-    vim.api.nvim_create_user_command("Svop", function(opts)
-        local cmd_arg = opts.fargs[1]
-        utils.filename_hop(cmd_args_filename_mappings[cmd_arg])
-    end, {
-        nargs = 1,
-        desc = "Svelte-Hop Navigator",
+    vim.api.nvim_create_autocmd({ "VimEnter" }, {
+        callback = function()
+            require("svelte-hop.highlights").setup()
+        end,
+        once = true,
+        group = vim.api.nvim_create_augroup("SvopSetup", { clear = true }),
     })
 
-    vim.api.nvim_create_user_command("SvopEnable", function()
-        actions.enable_svop()
-    end, {})
+    if config.enabled then
+        svop.enable()
+    end
 
-    vim.api.nvim_create_user_command("SvopActivate", function()
-        actions.activate_svop()
-    end, {})
+    vim.api.nvim_create_user_command("SvopEnable", svop.enable, {})
+    vim.api.nvim_create_user_command("SvopActivate", svop.activate, {})
 end
 
 return M
