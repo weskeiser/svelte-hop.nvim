@@ -15,7 +15,7 @@ Svelte-Hop is a quality of life plugin for Svelte programming in neovim. Jump be
 ## Table of contents
 
 - [Install](#Install)
-- [Setup](#Setup)
+- [Config](#Config)
 - [Statusline](#Statusline)
 - [Icons](#Icons)
 - [Highlights](#Highlights)
